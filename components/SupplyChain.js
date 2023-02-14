@@ -16,6 +16,12 @@ export default function SupplyChain() {
   const [viewFee, setViewFee] = useState("0");
   const [numWords, setNumWords] = useState("0");
   const [randomNumbers, setRandomNumbers] = useState("0");
+  const [resultados1, setResultado1] = useState("0");
+
+  let x;
+  let resultados = [];
+  let resultados2 = [];
+  let totality = [];
 
   const dispatch = useNotification();
 
@@ -35,13 +41,13 @@ export default function SupplyChain() {
   });
 
   const {
-    runContractFunction: getRandomNumbers,
+    runContractFunction: getNum,
     isLoading,
     isFetching,
   } = useWeb3Contract({
     abi: abi,
     contractAddress: randomAddress,
-    functionName: "getRandomNumbers",
+    functionName: "getNum",
     params: {},
   });
 
@@ -60,16 +66,92 @@ export default function SupplyChain() {
   useEffect(() => {
     if (isWeb3Enabled) {
       async function updateUI() {
-        const viewFeeFromCall = (await getViewFee()).toString();
+        //const viewFeeFromCall = (await getViewFee()).toString();
         const numWordsFromCall = (await getNumWords()).toString();
-        const randomNumbersFromCall = await getRandomNumbers(1);
-        setViewFee(viewFeeFromCall);
+        const randomNumbersFromCall = (await getNum()).toString();
+        const resultado1FromCall = await strings();
+        //setViewFee(viewFeeFromCall);
         setNumWords(numWordsFromCall);
+        console.log(randomNumbersFromCall);
         setRandomNumbers(randomNumbersFromCall);
+        setResultado1(resultado1FromCall);
       }
       updateUI();
     }
   }, [isWeb3Enabled]);
+
+  async function strings() {
+    x = randomNumbers.toString();
+    let y = x.length;
+    console.log(x);
+    console.log(y);
+    let total = Math.trunc(y / 8);
+    let z = 0;
+    let variables = [];
+    if (total > 6) {
+      while (z != 36) {
+        variables.push(x.slice(z, z + 6));
+        z += 6;
+      }
+    }
+    console.log(total);
+    variables.sort();
+    let ordenados = [];
+    console.log(`Las variables ${variables}`);
+    for (let i = 0; i < variables.length; i++) {
+      ordenados[i] = variables[i] % 6;
+    }
+
+    ordenados.sort();
+
+    console.log(`Ordenados ${ordenados}`);
+
+    let result = ordenados.filter((item, index) => {
+      return ordenados.indexOf(item) == index;
+    });
+    console.log(result);
+    let poner = 0;
+    do {
+      result.push(poner);
+      poner++;
+    } while (result.length < 4);
+    result.sort();
+
+    console.log(result);
+
+    const cadenas = [
+      "Reception of the animal",
+      "Animal is sent to the slaughterhouse",
+      "Meet is cutted into smaller pieces",
+      "Quality control on the meet already processed",
+      "Transported into the store",
+      "Meet already available on store",
+    ];
+
+    for (let i = 0; i < result.length; i++) {
+      resultados.push(cadenas[result[i]]);
+    }
+    const fechas = [
+      "25/01/2023 10:53",
+      "26/01/2023 14:22",
+      "26/01/2023 18:09",
+      "30/01/2023 12:22",
+      "02/02/2023 9:33",
+      "03/02/2023 19:44",
+    ];
+
+    for (let i = 0; i < result.length; i++) {
+      resultados2.push(fechas[result[i]]);
+    }
+    console.log(resultados);
+    console.log(resultados2);
+    for (let i = 0; i < result.length; i++) {
+      totality.push(resultados[i], resultados2[i]);
+    }
+    console.log(totality);
+
+    return totality;
+  }
 
   const handleSuccess = async function (tx) {
     await tx.wait(1);
@@ -89,7 +171,8 @@ export default function SupplyChain() {
 
   return (
     <div className="p-5">
-      Hi from supply chain
+      View Supply Chain Fee: {0.1 || ethers.utils.formatUnits(viewFee, "ether")}
+      ETH
       {randomAddress ? (
         <div>
           <button
@@ -108,12 +191,27 @@ export default function SupplyChain() {
               <div>View Supply Chain</div>
             )}
           </button>
-          <div>
-            View Supply Chain Fee: {ethers.utils.formatUnits(viewFee, "ether")}
-            ETH
+
+          <div>Number of Words: {4 || numWords}</div>
+          <div className="Supplychain">
+            Supply Chain:
+            <nav className="Supplychain-nav">
+              <ul className="Supplychain-ul">
+                <li className="Supplychain-li">
+                  {resultados1[0] + ": " + resultados1[1]}
+                </li>
+                <li className="Supplychain-li">
+                  {resultados1[2] + ": " + resultados1[3]}
+                </li>
+                <li className="Supplychain-li">
+                  {resultados1[4] + ": " + resultados1[5]}
+                </li>
+                <li className="Supplychain-li">
+                  {resultados1[6] + ": " + resultados1[7]}
+                </li>
+              </ul>
+            </nav>
           </div>
-          <div>Number of Words: {numWords}</div>
-          <div>Random Words: {randomNumbers}</div>
         </div>
       ) : (
         <div> No Supply Address Detected </div>
