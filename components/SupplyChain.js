@@ -188,13 +188,14 @@ export default function SupplyChain() {
             {isLoading || isFetching ? (
               <div className="animate-spin spinner-border h-8 w-8 border-b-2 rounded-full"></div>
             ) : (
-              <div>View Supply Chain</div>
+              <div>Confirm View Of Supply Chain</div>
             )}
           </button>
-
-          <div>Number of Words: {4 || numWords}</div>
+          <div>Steps on the Chain: {4 || numWords} </div>
           <div className="Supplychain">
-            Supply Chain:
+            <u>
+              <strong>Supply chain</strong>
+            </u>
             <nav className="Supplychain-nav">
               <ul className="Supplychain-ul">
                 <li className="Supplychain-li">
